@@ -1,7 +1,7 @@
-from datetime import time as Time
+import time as Time
 
-
-def parse_input(input_time):
+# Convert hh:mm:ss into seconds
+def parse_input_colon(input_time):
     time_strings = input_time.split(":")
     time_chunks = []
     time_format = {0:0, 1:0, 2:0} 
@@ -15,9 +15,21 @@ def parse_input(input_time):
         return None # time shouldn't take a day
     for i in range(len(time_chunks)):
         time_format[i] = time_chunks[i]
-    return time_format
+        
+    seconds = time_format[0]
+    seconds += time_format[1] * 60
+    seconds += time_format[2] * 3600
+    return seconds
+
+def countdown(seconds):
+    while seconds:
+        print(seconds, end="\r\n")
+        Time.sleep(1)
+        seconds -= 1
+
+    print("Timer end")
 
         
 time_str = input("Enter time: ")
-time_to_countdown = parse_input(time_str)
-print(time_to_countdown)
+time_to_countdown = parse_input_colon(time_str)
+countdown(time_to_countdown)
