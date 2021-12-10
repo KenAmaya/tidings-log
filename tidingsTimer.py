@@ -1,7 +1,7 @@
 import time as Time
 
 # Convert hh:mm:ss into seconds
-def parse_input_colon(input_time):
+def clock_to_seconds(input_time):
     time_strings = input_time.split(":")
     time_chunks = []
     time_format = {0:0, 1:0, 2:0} 
@@ -21,6 +21,28 @@ def parse_input_colon(input_time):
     seconds += time_format[2] * 3600
     return seconds
 
+# Converts "XXmXXs" to seconds Ex.: 24m30s
+def minsecs_to_seconds(minsec):
+    minsec_list = minsec.split("m")
+    seconds = 0
+    minutes = 0
+    try:
+        minutes = int(minsec_list[0])
+        seconds = int(minsec_list[1].strip("s"))
+        seconds += minutes * 60
+    except (ValueError, IndexError) as e:
+        print(e)
+        return None
+    return seconds
+
+# Converts seconds to hh:mm:ss
+def seconds_to_clock(seconds):
+    hour, seconds = divmod(seconds, 3600) # Separate hours from seconds
+    minutes, seconds = divmod(seconds, 60) # Separate minutes from seconds
+    
+    print(hour, minutes, seconds)
+
+
 def countdown(seconds):
     while seconds:
         print(seconds, end="\r\n")
@@ -31,5 +53,7 @@ def countdown(seconds):
 
         
 time_str = input("Enter time: ")
-time_to_countdown = parse_input_colon(time_str)
-countdown(time_to_countdown)
+time_to_countdown = minsecs_to_seconds(time_str)
+#countdown(time_to_countdown)
+seconds_to_clock(time_to_countdown)
+
