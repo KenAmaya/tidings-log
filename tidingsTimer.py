@@ -35,12 +35,12 @@ def minsecs_to_seconds(minsec):
         return None
     return seconds
 
-# Converts seconds to hh:mm:ss
+# Converts seconds to dictionary
 def seconds_to_clock(seconds):
-    hour, seconds = divmod(seconds, 3600) # Separate hours from seconds
-    minutes, seconds = divmod(seconds, 60) # Separate minutes from seconds
-    
-    print(hour, minutes, seconds)
+    hours, seconds = divmod(seconds, 3600) # Separate hours from seconds
+    minutes, seconds = divmod(seconds, 60) # Separate minutes from seconds    
+    clock_time = {"hours":hour, "minutes":minutes, "seconds":seconds}
+    return clock_time
 
 
 def countdown(seconds):
