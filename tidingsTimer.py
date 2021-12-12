@@ -1,6 +1,8 @@
 import time as Time
+import os as OS
 
 # Convert hh:mm:ss into seconds
+# Args: string; Returns: int
 def clock_to_seconds(input_time):
     time_strings = input_time.split(":")
     time_chunks = []
@@ -22,6 +24,7 @@ def clock_to_seconds(input_time):
     return seconds
 
 # Converts "XXhXXmXXs" to seconds Ex.: 1h24m30s
+# Args: string; Returns: int
 def hms_to_seconds(hms_input):
     hours = 0
     minutes = 0
@@ -42,12 +45,33 @@ def hms_to_seconds(hms_input):
     return seconds
 
 # Converts seconds to dictionary
+# Args: int; Returns: dict
 def seconds_to_clock(seconds):
     hours, seconds = divmod(seconds, 3600) # Separate hours from seconds
     minutes, seconds = divmod(seconds, 60) # Separate minutes from seconds    
     clock_time = {"hours":hours, "minutes":minutes, "seconds":seconds}
     return clock_time
 
+# Create a log file with user notes. 
+# Args: struct_time, struct_time, string
+# Returns Bool(True on file write success)
+def create_txtlog(start_time, end_time, usernotes):
+    title_string = Time.strftime("%d-%m-%Y.txt", end_time)
+    entry_date = Time.strftime("%d of %B, %Y - %A\n", end_time)
+    start = Time.strftime("%H:%M\n", start_time)
+    end =  Time.strftime("\n%H:%M\n", end_time)
+    if not OS.path.exists(title_string):
+        outfile = open(title_string, "a")
+        outfile.write(entry_date)
+    else:
+        outfile = open(title_string, "a")
+    outfile.write(start)
+    outfile.write(usernotes)
+    outfile.write(end)
+    outfile.write("---------------")
+    outfile.write("\n")
+    outfile.close()
+    return True
 
 def countdown(seconds):
     while seconds:
@@ -58,8 +82,14 @@ def countdown(seconds):
     print("Timer end")
 
         
-time_str = input("Enter time: ")
-time_to_countdown = hms_to_seconds(time_str)
+#time_str = input("Enter time: ")
+#time_to_countdown = hms_to_seconds(time_str)
 #countdown(time_to_countdown)
-print(seconds_to_clock(time_to_countdown))
+#print(seconds_to_clock(time_to_countdown))
+
+# Testing create_txtlog
+s_time = Time.localtime(Time.time()-3600)
+e_time = Time.localtime(Time.time())
+test_str = "Example log"
+create_txtlog(s_time, e_time, test_str)
 
