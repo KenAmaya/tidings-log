@@ -21,14 +21,20 @@ def clock_to_seconds(input_time):
     seconds += time_format[2] * 3600
     return seconds
 
-# Converts "XXmXXs" to seconds Ex.: 24m30s
-def minsecs_to_seconds(minsec):
-    minsec_list = minsec.split("m")
-    seconds = 0
+# Converts "XXhXXmXXs" to seconds Ex.: 1h24m30s
+def hms_to_seconds(hms_input):
+    hours = 0
     minutes = 0
+    seconds = 0
     try:
-        minutes = int(minsec_list[0])
-        seconds = int(minsec_list[1].strip("s"))
+        if hms_input.find("h"):
+            hours = int(hms_input.split("h")[0])
+            hms_input = hms_input.split("h")[-1]
+        if hms_input.find("m"):
+            minutes = int(hms_input.split("m")[0])
+            hms_input = hms_input.split("m")[-1]
+        seconds = int(hms_input.strip("s"))
+        seconds += hours * 3600
         seconds += minutes * 60
     except (ValueError, IndexError) as e:
         print(e)
@@ -39,7 +45,7 @@ def minsecs_to_seconds(minsec):
 def seconds_to_clock(seconds):
     hours, seconds = divmod(seconds, 3600) # Separate hours from seconds
     minutes, seconds = divmod(seconds, 60) # Separate minutes from seconds    
-    clock_time = {"hours":hour, "minutes":minutes, "seconds":seconds}
+    clock_time = {"hours":hours, "minutes":minutes, "seconds":seconds}
     return clock_time
 
 
@@ -53,7 +59,7 @@ def countdown(seconds):
 
         
 time_str = input("Enter time: ")
-time_to_countdown = minsecs_to_seconds(time_str)
+time_to_countdown = hms_to_seconds(time_str)
 #countdown(time_to_countdown)
-seconds_to_clock(time_to_countdown)
+print(seconds_to_clock(time_to_countdown))
 
