@@ -73,13 +73,6 @@ def create_txtlog(start_time, end_time, usernotes):
     outfile.close()
     return True
 
-def countdown(seconds):
-    while seconds:
-        print(seconds, end="\r\n")
-        Time.sleep(1)
-        seconds -= 1
-
-    print("Timer end")
 
 class Timer:
     def __init__(self, time_string):
@@ -105,26 +98,6 @@ class Timer:
             Time.sleep(1)
             self.seconds -= 1
         return Time.time()
-        
-class timer:
-    def __init__(self, time_str):
-        self.start_time = Time.time()
-        # insert code here to convert time_str to seconds to countdown
-        self.seconds = time_str
-        self.end_time = Time.time() - self.seconds # What time the countdown ends
-        self.hours, self.seconds = divmod(self.seconds, 3600) # Separate hours from seconds
-        self.minutes, self.seconds = divmod(self.seconds, 60) # Separate minutes from seconds    
-
-
-    def __repr__(self):
-        if self.hours > 0:
-            timer_str = "{:02d}:{:02d}:{:02d}".format(self.hours, self.minutes, self.seconds)
-            return time_str
-        elif self.minutes > 0:
-            timer_str = "{:02d}:{:02d}".format(self.minutes, self.seconds)
-            return timer_str
-        timer_str = "{02d}".format(str(self.seconds))
-        return timer_str
         
 
 # Testing create_txtlog
