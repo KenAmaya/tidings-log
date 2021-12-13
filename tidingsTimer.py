@@ -49,7 +49,7 @@ def hms_to_seconds(hms_input):
 def seconds_to_clock(seconds):
     hours, seconds = divmod(seconds, 3600) # Separate hours from seconds
     minutes, seconds = divmod(seconds, 60) # Separate minutes from seconds    
-    clock_time = {"hours":hours, "minutes":minutes, "seconds":seconds}
+    clock_time = {2:hours, 1:minutes, 0:seconds}
     return clock_time
 
 # Create a log file with user notes. 
@@ -81,6 +81,30 @@ def countdown(seconds):
 
     print("Timer end")
 
+class Timer:
+    def __init__(self, time_string):
+        # insert function to convert time_string to seconds
+        self.seconds = time_string
+        self.start_time = Time.time()
+
+    def __repr__(self):
+        clock_time = seconds_to_clock(self.seconds)
+        out_clock = "{:02d}:{:02d}".format(clock_time[1], clock_time[0])
+        if clock_time[2] > 0:
+            out_clock = "{:02d}:".format(clock_time[2]) + out_clock
+        return out_clock
+
+    def __add__(self, seconds):
+        self.seconds += seconds
+    def __sub__(self, seconds):
+        self.seconds -= seconds
+
+    def countdown(self):
+        while self.seconds >= 0:
+            print(self, end="\r")
+            Time.sleep(1)
+            self.seconds -= 1
+        return Time.time()
         
 #time_str = input("Enter time: ")
 #time_to_countdown = hms_to_seconds(time_str)
@@ -88,8 +112,22 @@ def countdown(seconds):
 #print(seconds_to_clock(time_to_countdown))
 
 # Testing create_txtlog
-s_time = Time.localtime(Time.time()-3600)
-e_time = Time.localtime(Time.time())
-test_str = "Example log"
-create_txtlog(s_time, e_time, test_str)
+# s_time = Time.localtime(Time.time()-3600)
+# e_time = Time.localtime(Time.time())
+# test_str = "Example log"
+# create_txtlog(s_time, e_time, test_str)
 
+# Testing Time class
+# t1 = Timer(1830)
+# t2 = Timer(3621)
+# print(t1)
+# print(t2)
+# t1 + 21
+# t2 - 56
+# print(t1)
+# print(t2)
+
+# Testing Time's countdown
+t3 = Timer(11)
+end = t3.countdown()
+print(Time.ctime(end))
