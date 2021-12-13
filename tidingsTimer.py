@@ -11,8 +11,8 @@ def clock_to_seconds(input_time):
     for i in range(len(time_strings)-1, -1, -1): # Check if input is digit
         try:
             time_chunks.append(int(time_strings[i]))
-        except ValueError:
-            return None
+        except ValueError as e:
+            return e
     if len(time_chunks) > 3:
         return None # time shouldn't take a day
     for i in range(len(time_chunks)):
@@ -30,18 +30,27 @@ def hms_to_seconds(hms_input):
     minutes = 0
     seconds = 0
     try:
-        if hms_input.find("h"):
+        if hms_input.find("h") > -1:
             hours = int(hms_input.split("h")[0])
             hms_input = hms_input.split("h")[-1]
-        if hms_input.find("m"):
+        if hms_input.find("m") > -1:
             minutes = int(hms_input.split("m")[0])
             hms_input = hms_input.split("m")[-1]
         seconds = int(hms_input.strip("s"))
         seconds += hours * 3600
         seconds += minutes * 60
     except (ValueError, IndexError) as e:
-        print(e)
-        return None
+        return e
+    return seconds
+
+# Check if input string is HH:MM:SS or XXhXXmXXs
+# then pass to the correct converter
+def parse_timeinput(time_input):
+    seconds = 0
+    if time_input.find(":") > -1:
+        seconds = clock_to_seconds(time_input)
+    else:
+        seconds = hms_to_seconds(time_input)
     return seconds
 
 # Converts seconds to dictionary
@@ -76,8 +85,7 @@ def create_txtlog(start_time, end_time, usernotes):
 
 class Timer:
     def __init__(self, time_string):
-        # insert function to convert time_string to seconds
-        self.seconds = time_string
+        self.seconds = parse_timeinput(time_string)
         self.start_time = Time.time()
 
     def __repr__(self):
@@ -117,6 +125,6 @@ class Timer:
 # print(t2)
 
 # Testing Time's countdown
-t3 = Timer(11)
+t3 = Timer("1h9s")
 end = t3.countdown()
 print(Time.ctime(end))
