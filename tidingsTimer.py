@@ -44,13 +44,6 @@ def hms_to_seconds(hms_input):
         return None
     return seconds
 
-# Converts seconds to dictionary
-# Args: int; Returns: dict
-def seconds_to_clock(seconds):
-    hours, seconds = divmod(seconds, 3600) # Separate hours from seconds
-    minutes, seconds = divmod(seconds, 60) # Separate minutes from seconds    
-    clock_time = {"hours":hours, "minutes":minutes, "seconds":seconds}
-    return clock_time
 
 # Create a log file with user notes. 
 # Args: struct_time, struct_time, string
@@ -82,14 +75,38 @@ def countdown(seconds):
     print("Timer end")
 
         
-#time_str = input("Enter time: ")
-#time_to_countdown = hms_to_seconds(time_str)
-#countdown(time_to_countdown)
-#print(seconds_to_clock(time_to_countdown))
+class timer:
+    def __init__(self, time_str):
+        self.start_time = Time.time()
+        # insert code here to convert time_str to seconds to countdown
+        self.seconds = time_str
+        self.end_time = Time.time() - self.seconds # What time the countdown ends
+        self.hours, self.seconds = divmod(self.seconds, 3600) # Separate hours from seconds
+        self.minutes, self.seconds = divmod(self.seconds, 60) # Separate minutes from seconds    
+
+
+    def __repr__(self):
+        if self.hours > 0:
+            timer_str = "{:02d}:{:02d}:{:02d}".format(self.hours, self.minutes, self.seconds)
+            return time_str
+        elif self.minutes > 0:
+            timer_str = "{:02d}:{:02d}".format(self.minutes, self.seconds)
+            return timer_str
+        timer_str = "{02d}".format(str(self.seconds))
+        return timer_str
+        
 
 # Testing create_txtlog
-s_time = Time.localtime(Time.time()-3600)
-e_time = Time.localtime(Time.time())
-test_str = "Example log"
-create_txtlog(s_time, e_time, test_str)
+#s_time = Time.localtime(Time.time()-3600)
+#e_time = Time.localtime(Time.time())
+#test_str = "Example log"
+#create_txtlog(s_time, e_time, test_str)
 
+# Testing class: timer
+t = timer(1851)
+print(t.start_time)
+print(t.end_time)
+print(t.hours)
+print(t.minutes)
+print(t.seconds)
+print(t)
