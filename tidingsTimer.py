@@ -61,26 +61,6 @@ def seconds_to_clock(seconds):
     clock_time = {2:hours, 1:minutes, 0:seconds}
     return clock_time
 
-# Create a log file with user notes. 
-# Args: struct_time, struct_time, string
-# Returns Bool(True on file write success)
-def create_txtlog(start_time, end_time, usernotes):
-    title_string = Time.strftime("%d-%m-%Y.txt", end_time)
-    entry_date = Time.strftime("%d of %B, %Y - %A\n", end_time)
-    start = Time.strftime("%H:%M\n", start_time)
-    end =  Time.strftime("\n%H:%M\n", end_time)
-    if not OS.path.exists(title_string):
-        outfile = open(title_string, "a")
-        outfile.write(entry_date)
-    else:
-        outfile = open(title_string, "a")
-    outfile.write(start)
-    outfile.write(usernotes)
-    outfile.write(end)
-    outfile.write("---------------")
-    outfile.write("\n")
-    outfile.close()
-    return True
 
 
 class Timer:
@@ -107,6 +87,41 @@ class Timer:
             self.seconds -= 1
         return Time.time()
         
+class Logger:
+    rounds = 0
+    def __init__(self, start_time, end_time):
+        self.start_time = start_time
+        self.end_time = end_time
+        Logger.rounds += 1
+
+    
+    # Create a log file with user notes. 
+    # Returns Bool(True on file write success)
+    def write_txtentry(self):
+        title_string = Time.strftime("%d-%m-%Y.txt", self.end_time)
+        entry_date = Time.strftime("%d of %B, %Y - %A\n", self.end_time)
+        start = Time.strftime("%H:%M\n", self.start_time)
+        end =  Time.strftime("\n%H:%M\n", self.end_time)
+        if not OS.path.exists(title_string):
+            outfile = open(title_string, "a")
+            outfile.write(entry_date)
+        else:
+            outfile = open(title_string, "a")
+        outfile.write(start)
+        usernotes = input("What did you do? (Separate tasks with ,)\n").split(", ")
+        for a_note in usernotes:
+            outfile.write("‣ " + a_note + "\n")
+        outfile.write(end)
+        outfile.write("---------------")
+        outfile.write("\n")
+        outfile.close()
+        return True
+
+# Testing Logger class
+#s_time = Time.localtime(Time.time()-3600)
+#e_time = Time.localtime(Time.time())
+#log = Logger(s_time, e_time)
+#print(log.write_txtentry())
 
 # Testing create_txtlog
 # s_time = Time.localtime(Time.time()-3600)
@@ -124,7 +139,7 @@ class Timer:
 # print(t1)
 # print(t2)
 
-# Testing Time's countdown
-t3 = Timer("1h9s")
-end = t3.countdown()
-print(Time.ctime(end))
+## Testing Time's countdown
+#t3 = Timer("1h9s")
+#end = t3.countdown()
+#print(Time.ctime(end))
