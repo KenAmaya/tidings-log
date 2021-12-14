@@ -29,17 +29,26 @@ def hms_to_seconds(hms_input):
     hours = 0
     minutes = 0
     seconds = 0
+    temp = []
     try:
         if hms_input.find("h") > -1:
-            hours = int(hms_input.split("h")[0])
-            hms_input = hms_input.split("h")[-1]
+            temp = hms_input.split("h")
+            hours = int(temp[0])
+            hms_input = ""
+            for i in range(1, len(temp)):
+                hms_input += str(temp[i])
         if hms_input.find("m") > -1:
-            minutes = int(hms_input.split("m")[0])
-            hms_input = hms_input.split("m")[-1]
-        seconds = int(hms_input.strip("s"))
+            temp = hms_input.split("m")
+            minutes = int(temp[0])
+            hms_input = ""
+            for i in range(1, len(temp)):
+                hms_input += str(temp[i])
+        if len(hms_input) > 0:
+            seconds += int(hms_input.strip("s"))
         seconds += hours * 3600
         seconds += minutes * 60
     except (ValueError, IndexError) as e:
+        print(e)
         return e
     return seconds
 
@@ -66,7 +75,9 @@ def seconds_to_clock(seconds):
 class Timer:
     def __init__(self, time_string):
         self.seconds = parse_timeinput(time_string)
-        self.start_time = Time.time()
+#       self.start_time = Time.time()
+        end_time = Time.time() + self.seconds
+        self.end_time_str = Time.strftime("%H:%M", Time.localtime(end_time))
 
     def __repr__(self):
         clock_time = seconds_to_clock(self.seconds)
@@ -80,42 +91,53 @@ class Timer:
     def __sub__(self, seconds):
         self.seconds -= seconds
 
-    def countdown(self):
+    def countdown_start(self):
+        timer_ends = Time.localtime()
         while self.seconds >= 0:
-            print(self, end="\r")
+            print("{}    \tTimer ends on: {}".format(self, self.end_time_str), end="\r")
             Time.sleep(1)
             self.seconds -= 1
-        return Time.time()
+        return Time.localtime()
         
 class Logger:
     rounds = 0
-    def __init__(self, start_time, end_time):
-        self.start_time = start_time
-        self.end_time = end_time
+    def __init__(self):
         Logger.rounds += 1
 
     
     # Create a log file with user notes. 
     # Returns Bool(True on file write success)
-    def write_txtentry(self):
-        title_string = Time.strftime("%d-%m-%Y.txt", self.end_time)
-        entry_date = Time.strftime("%d of %B, %Y - %A\n", self.end_time)
-        start = Time.strftime("%H:%M\n", self.start_time)
-        end =  Time.strftime("\n%H:%M\n", self.end_time)
+    def write_txtentry(self, start_time, end_time):
+        title_string = Time.strftime("%d-%m-%Y.txt", end_time)
+        entry_date = Time.strftime("%d of %B, %Y - %A\n", end_time)
+        start = Time.strftime("%H:%M\n", start_time)
+        end =  Time.strftime("\n%H:%M\n", end_time)
         if not OS.path.exists(title_string):
+            print("Creating file " + title_string)
             outfile = open(title_string, "a")
             outfile.write(entry_date)
         else:
+            print("Opening file " + title_string)
             outfile = open(title_string, "a")
         outfile.write(start)
         usernotes = input("What did you do? (Separate tasks with ,)\n").split(", ")
         for a_note in usernotes:
-            outfile.write("‣ " + a_note + "\n")
+            outfile.write("‣ " + a_note.strip() + "\n")
         outfile.write(end)
         outfile.write("---------------")
         outfile.write("\n")
         outfile.close()
+        print("File " + title_string + " written")
         return True
+
+# Testing Logger and timer together
+time_length = input("Time length: ")
+timer = Timer(time_length)
+logger = Logger()
+start_time = Time.localtime()
+end_time = timer.countdown_start()
+logger.write_txtentry(start_time, end_time)
+
 
 # Testing Logger class
 #s_time = Time.localtime(Time.time()-3600)
