@@ -73,11 +73,8 @@ def seconds_to_clock(seconds):
 
 
 class Timer:
-    def __init__(self, time_string):
-        self.seconds = parse_timeinput(time_string)
-#       self.start_time = Time.time()
-        end_time = Time.time() + self.seconds
-        self.end_time_str = Time.strftime("%H:%M", Time.localtime(end_time))
+    def __init__(self):
+        self.seconds = 0
 
     def __repr__(self):
         clock_time = seconds_to_clock(self.seconds)
@@ -86,24 +83,27 @@ class Timer:
             out_clock = "{:02d}:".format(clock_time[2]) + out_clock
         return out_clock
 
+    # 87-90 To expand on: Add a way to add or subtract time whilst the timer is running.
     def __add__(self, seconds):
         self.seconds += seconds
     def __sub__(self, seconds):
         self.seconds -= seconds
 
+    def set_timer(self, time_string):
+        self.seconds = parse_timeinput(time_string)
+
     def countdown_start(self):
-        timer_ends = Time.localtime()
+        end_time = Time.time() + self.seconds # Calculate what time the timer will end
+        end_time_str = Time.strftime("%H:%M", Time.localtime(end_time))
         while self.seconds >= 0:
-            print("{}    \tTimer ends on: {}".format(self, self.end_time_str), end="\r")
+            print("{}    \tTimer ends on: {}".format(self, end_time_str), end="\r")
             Time.sleep(1)
             self.seconds -= 1
         return Time.localtime()
         
 class Logger:
-    rounds = 0
     def __init__(self):
-        Logger.rounds += 1
-
+        pass
     
     # Create a log file with user notes. 
     # Returns Bool(True on file write success)
@@ -119,24 +119,43 @@ class Logger:
         else:
             print("Opening file " + title_string)
             outfile = open(title_string, "a")
-        outfile.write(start)
+        outfile.write(start + "\n")
         usernotes = input("What did you do? (Separate tasks with ,)\n").split(", ")
         for a_note in usernotes:
             outfile.write("‣ " + a_note.strip() + "\n")
-        outfile.write(end)
-        outfile.write("---------------")
-        outfile.write("\n")
+        outfile.write("Timer ended at: " + end + "\t")
+        outfile.write("This note taken at: " + Time.strftime("%H:%M",Time.localtime()))
+        # 126-127 To expand on: Track the difference between timer end and note taken
+        outfile.write("\n---------------\n")
         outfile.close()
         print("File " + title_string + " written")
         return True
 
-# Testing Logger and timer together
-time_length = input("Time length: ")
-timer = Timer(time_length)
+# The run part of the program
+run_again = True
+rounds = 0
+timer = Timer()
 logger = Logger()
-start_time = Time.localtime()
-end_time = timer.countdown_start()
-logger.write_txtentry(start_time, end_time)
+while run_again:
+    time_length = input("Timer length: ")
+    timer.set_timer(time_length)
+    end_time = timer.countdown_start() # countdown_start() returns what time it ended
+    logger.write_txtentry(Time.localtime(), end_time)
+    rounds += 1
+    print("Round {} has ended".format(rounds))
+    user_input = input("Run again? (y/n)")
+    if "y" in user_input.lower():
+        continue
+    else:
+        run_again = False
+
+## Testing Logger and timer together
+#time_length = input("Time length: ")
+#timer = Timer(time_length)
+#logger = Logger()
+#start_time = Time.localtime()
+#end_time = timer.countdown_start()
+#logger.write_txtentry(start_time, end_time)
 
 
 # Testing Logger class
