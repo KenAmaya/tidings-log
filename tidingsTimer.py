@@ -120,11 +120,11 @@ class Logger:
             print("Opening file " + title_string)
             outfile = open(title_string, "a")
         outfile.write(start + "\n")
-        usernotes = input("What did you do? (Separate tasks with ,)\n").split(", ")
+        usernotes = input("What did you do? (Separate tasks with ,)\n").split(",")
         for a_note in usernotes:
             outfile.write("‣ " + a_note.strip() + "\n")
-        outfile.write("Timer ended at: " + end + "\t")
-        outfile.write("This note taken at: " + Time.strftime("%H:%M",Time.localtime()))
+        outfile.write("Timer ended at: " + end + "\n")
+        outfile.write("Note written at: " + Time.strftime("%H:%M",Time.localtime()))
         # 126-127 To expand on: Track the difference between timer end and note taken
         outfile.write("\n---------------\n")
         outfile.close()
@@ -149,38 +149,4 @@ while run_again:
     else:
         run_again = False
 
-## Testing Logger and timer together
-#time_length = input("Time length: ")
-#timer = Timer(time_length)
-#logger = Logger()
-#start_time = Time.localtime()
-#end_time = timer.countdown_start()
-#logger.write_txtentry(start_time, end_time)
 
-
-# Testing Logger class
-#s_time = Time.localtime(Time.time()-3600)
-#e_time = Time.localtime(Time.time())
-#log = Logger(s_time, e_time)
-#print(log.write_txtentry())
-
-# Testing create_txtlog
-# s_time = Time.localtime(Time.time()-3600)
-# e_time = Time.localtime(Time.time())
-# test_str = "Example log"
-# create_txtlog(s_time, e_time, test_str)
-
-# Testing Time class
-# t1 = Timer(1830)
-# t2 = Timer(3621)
-# print(t1)
-# print(t2)
-# t1 + 21
-# t2 - 56
-# print(t1)
-# print(t2)
-
-## Testing Time's countdown
-#t3 = Timer("1h9s")
-#end = t3.countdown()
-#print(Time.ctime(end))
