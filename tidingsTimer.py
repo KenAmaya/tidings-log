@@ -138,9 +138,10 @@ timer = Timer()
 logger = Logger()
 while run_again:
     time_length = input("Timer length: ")
+    start_time = Time.localtime()
     timer.set_timer(time_length)
     end_time = timer.countdown_start() # countdown_start() returns what time it ended
-    logger.write_txtentry(Time.localtime(), end_time)
+    logger.write_txtentry(start_time, end_time)
     rounds += 1
     print("Round {} has ended".format(rounds))
     user_input = input("Run again? (y/n)")
