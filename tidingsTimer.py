@@ -112,6 +112,7 @@ class Logger:
         entry_date = Time.strftime("%d of %B, %Y - %A\n", end_time)
         start = Time.strftime("%H:%M\n", start_time)
         end =  Time.strftime("\n%H:%M\n", end_time)
+        usernotes = input("What did you do? (Separate tasks with ,)\n").split(",")
         if not OS.path.exists(title_string):
             print("Creating file " + title_string)
             outfile = open(title_string, "a")
@@ -120,7 +121,6 @@ class Logger:
             print("Opening file " + title_string)
             outfile = open(title_string, "a")
         outfile.write(start + "\n")
-        usernotes = input("What did you do? (Separate tasks with ,)\n").split(",")
         for a_note in usernotes:
             outfile.write("‣ " + a_note.strip() + "\n")
         outfile.write("Timer ended at: " + end + "\n")
